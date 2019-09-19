@@ -1,0 +1,29 @@
+说明客户端与服务端建立了多少个 TCP channel，分别是哪些 frame，分别完成了什么传输任务，为什么存在多个 TCP channel
+
+1
+Frame 8 9 10 12 13 14 15 16 17 18 19 20 21 22 24 28 ... (所有60686端口的帧)
+port 60686
+完成了下列url对应内容的传输： /, /style.css, /icons/kaiyuanshe.png, /icons/file_small.png, /icons/mirror-setting-tips.png
+
+2
+Frame 27 104 105 107 120 ... (所有60690端口的帧)
+port 60690
+完成了下列url对应内容的传输： /icons/help.png, /icons/quick-link.png
+
+3
+Frame 97 112 113
+port 60692
+完成了下列url对应内容的传输：（无）
+
+4
+Frame 98 110 111 123 124 125 127
+port 60694
+完成了下列url对应内容的传输：/icons/contact.png
+
+5
+Frame 99 115 116
+port 60696
+完成了下列url对应内容的传输：（无）
+
+存在多个tcp-channel是因为http1.1在一个连接上，最多只能同时发起一个请求（虽然http1.1支持流水线，但几乎没有客户端默认支持）。
+浏览器为了加快页面加载速度，建立了多个连接，方便同时发起多个请求。

@@ -1,0 +1,62 @@
+详细描述客户端发起的每一次 DNS 请求和结果
+
+1
+本地ip 127.0.0.1
+dns服务器 127.0.1.1:53
+行数 1-79
+查询mirror.azure.cn A记录，期望递归
+行数 529-422
+接受递归查询，非权威dns
+mirror.azure.cn是mirror.trafficmanager.cn的别名
+过期时间3344
+mirror.trafficmanager.cn是eastmirror.chinacloudapp.cn的别名
+过期时间60
+eastmirror.chinacloudapp.cn的A记录是139.217.146.62
+过期时间60
+查询耗时0.003748760
+推测是递归查询后返回的结果，所以比另外两个内网dns慢
+
+2
+本地ip 10.11.29.131
+dns服务器 210.22.70.3
+行数 80-158
+查询mirror.azure.cn A记录，期望递归
+行数 426-528
+接受递归查询，非权威dns
+mirror.azure.cn是mirror.trafficmanager.cn的别名
+过期时间3332
+mirror.trafficmanager.cn是eastmirror.chinacloudapp.cn的别名
+过期时间32
+eastmirror.chinacloudapp.cn的A记录是139.217.146.62
+过期时间53
+查询耗时0.003479936
+
+3
+本地ip 10.11.29.131
+dns服务器 210.22.84.3
+行数 159-237
+查询mirror.azure.cn A记录，期望递归
+行数 317-422
+接受递归查询，非权威dns
+mirror.azure.cn是mirror.trafficmanager.cn的别名
+过期时间3344
+mirror.trafficmanager.cn是eastmirror.chinacloudapp.cn的别名
+过期时间60
+eastmirror.chinacloudapp.cn的A记录是139.217.146.62
+过期时间60
+查询耗时0.003406391
+
+4
+本地ip 10.11.29.131
+dns服务器 114.114.114.114
+行数 238-316
+查询mirror.azure.cn A记录，期望递归
+行数 2465-2570
+接受递归查询，非权威dns
+mirror.azure.cn是mirror.trafficmanager.cn的别名
+过期时间1377
+mirror.trafficmanager.cn是eastmirror.chinacloudapp.cn的别名
+过期时间37
+eastmirror.chinacloudapp.cn的A记录是139.217.146.62
+过期时间37
+查询耗时0.026617849

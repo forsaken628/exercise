@@ -1,0 +1,139 @@
+选择几个 frame 详细说明一次 TCP 握手流程，需要包含具体 frame 内容
+
+第1步 ：客户端向服务器发送一个同步数据包请求建立连接（SYN=1），序列号是客户端随机产生的一个值，确认号是0；
+Frame 8
+Transmission Control Protocol, Src Port: 60686, Dst Port: 80, Seq: 0, Len: 0
+    Source Port: 60686 //源端口
+    Destination Port: 80 //目标端口
+    [Stream index: 0]
+    [TCP Segment Len: 0]
+    Sequence number: 0    (relative sequence number) //顺序号，客户端随机产生
+    [Next sequence number: 0    (relative sequence number)]
+    Acknowledgment number: 0 //确认号=0
+    1010 .... = Header Length: 40 bytes (10) //头部长度
+    Flags: 0x002 (SYN)
+        000. .... .... = Reserved: Not set
+        ...0 .... .... = Nonce: Not set
+        .... 0... .... = Congestion Window Reduced (CWR): Not set
+        .... .0.. .... = ECN-Echo: Not set
+        .... ..0. .... = Urgent: Not set
+        .... ...0 .... = Acknowledgment: Not set
+        .... .... 0... = Push: Not set
+        .... .... .0.. = Reset: Not set
+        .... .... ..1. = Syn: Set //客户端请求建立连接
+        .... .... ...0 = Fin: Not set
+        [TCP Flags: ··········S·]
+    Window size value: 29200 //窗口大小
+    [Calculated window size: 29200]
+    Checksum: 0x45d4 [unverified] //校验和
+    [Checksum Status: Unverified]
+    Urgent pointer: 0
+    Options: (20 bytes), Maximum segment size, SACK permitted, Timestamps, No-Operation (NOP), Window scale
+        TCP Option - Maximum segment size: 1460 bytes //最大segment长度
+            Kind: Maximum Segment Size (2)
+            Length: 4
+            MSS Value: 1460
+        TCP Option - SACK permitted //选择性确认
+            Kind: SACK Permitted (4)
+            Length: 2
+        TCP Option - Timestamps: TSval 1759700185, TSecr 0 //时间戳
+            Kind: Time Stamp Option (8)
+            Length: 10
+            Timestamp value: 1759700185
+            Timestamp echo reply: 0
+        TCP Option - No-Operation (NOP) //对齐
+            Kind: No-Operation (1)
+        TCP Option - Window scale: 7 (multiply by 128) //窗口扩大因子
+            Kind: Window Scale (3)
+            Length: 3
+            Shift count: 7
+            [Multiplier: 128]
+
+第2步 ：服务器收到这个同步请求数据包后，会对客户端进行一个同步确认。这个数据包中，序列号是服务器随机产生的一个值，确认号是客户端的初始序列号+1；
+Frame 9
+Transmission Control Protocol, Src Port: 80, Dst Port: 60686, Seq: 0, Ack: 1, Len: 0
+    Source Port: 80
+    Destination Port: 60686
+    [Stream index: 0]
+    [TCP Segment Len: 0]
+    Sequence number: 0    (relative sequence number) //顺序号，服务器随机产生
+    [Next sequence number: 0    (relative sequence number)]
+    Acknowledgment number: 1    (relative ack number) //确认号，收到的客户端序列号+1
+    1010 .... = Header Length: 40 bytes (10)
+    Flags: 0x012 (SYN, ACK)
+        000. .... .... = Reserved: Not set
+        ...0 .... .... = Nonce: Not set
+        .... 0... .... = Congestion Window Reduced (CWR): Not set
+        .... .0.. .... = ECN-Echo: Not set
+        .... ..0. .... = Urgent: Not set
+        .... ...1 .... = Acknowledgment: Set //确认收到
+        .... .... 0... = Push: Not set
+        .... .... .0.. = Reset: Not set
+        .... .... ..1. = Syn: Set //建立连接
+        .... .... ...0 = Fin: Not set
+        [TCP Flags: ·······A··S·]
+    Window size value: 28960
+    [Calculated window size: 28960]
+    Checksum: 0xe238 [unverified]
+    [Checksum Status: Unverified]
+    Urgent pointer: 0
+    Options: (20 bytes), Maximum segment size, SACK permitted, Timestamps, No-Operation (NOP), Window scale
+        TCP Option - Maximum segment size: 1440 bytes
+            Kind: Maximum Segment Size (2)
+            Length: 4
+            MSS Value: 1440
+        TCP Option - SACK permitted
+            Kind: SACK Permitted (4)
+            Length: 2
+        TCP Option - Timestamps: TSval 3890471464, TSecr 1759700185
+            Kind: Time Stamp Option (8)
+            Length: 10
+            Timestamp value: 3890471464
+            Timestamp echo reply: 1759700185
+        TCP Option - No-Operation (NOP)
+            Kind: No-Operation (1)
+        TCP Option - Window scale: 7 (multiply by 128)
+            Kind: Window Scale (3)
+            Length: 3
+            Shift count: 7
+            [Multiplier: 128]
+
+第3步 ：客户端收到这个同步确认数据包后，再对服务器进行一个确认。该数据包中，序列号是上一个同步请求数据包中的确认号值，确认号是服务器的初始序列号+1。
+Frame 10
+Transmission Control Protocol, Src Port: 60686, Dst Port: 80, Seq: 1, Ack: 1, Len: 0
+    Source Port: 60686
+    Destination Port: 80
+    [Stream index: 0]
+    [TCP Segment Len: 0]
+    Sequence number: 1    (relative sequence number) //顺序号，上一个客户端顺序号+1
+    [Next sequence number: 1    (relative sequence number)]
+    Acknowledgment number: 1    (relative ack number) //确认号，收到的服务器顺序号+1
+    1000 .... = Header Length: 32 bytes (8)
+    Flags: 0x010 (ACK)
+        000. .... .... = Reserved: Not set
+        ...0 .... .... = Nonce: Not set
+        .... 0... .... = Congestion Window Reduced (CWR): Not set
+        .... .0.. .... = ECN-Echo: Not set
+        .... ..0. .... = Urgent: Not set
+        .... ...1 .... = Acknowledgment: Set //确认收到
+        .... .... 0... = Push: Not set
+        .... .... .0.. = Reset: Not set
+        .... .... ..0. = Syn: Not set
+        .... .... ...0 = Fin: Not set
+        [TCP Flags: ·······A····]
+    Window size value: 229
+    [Calculated window size: 29312]
+    [Window size scaling factor: 128]
+    Checksum: 0x45cc [unverified]
+    [Checksum Status: Unverified]
+    Urgent pointer: 0
+    Options: (12 bytes), No-Operation (NOP), No-Operation (NOP), Timestamps
+        TCP Option - No-Operation (NOP)
+            Kind: No-Operation (1)
+        TCP Option - No-Operation (NOP)
+            Kind: No-Operation (1)
+        TCP Option - Timestamps: TSval 1759700191, TSecr 3890471464
+            Kind: Time Stamp Option (8)
+            Length: 10
+            Timestamp value: 1759700191
+            Timestamp echo reply: 3890471464
