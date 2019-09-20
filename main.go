@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net"
-	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
@@ -50,7 +49,7 @@ func handleConn(conn net.Conn) {
 
 	req := &Request{
 		Method: spl[0],
-		Header: make(http.Header),
+		Header: make(Header),
 		URL:    spl[1],
 		Body:   r,
 	}
@@ -100,14 +99,15 @@ func (r *LineReader) Line() (string, error) {
 
 type Request struct {
 	Method string
-	Header http.Header
+	Header Header
 	URL    string
 	Body   io.Reader
 }
 
 var httpHandle = map[string]func(*Request, net.Conn){
 	"/": func(request *Request, conn net.Conn) {
-		if request.Header.Get("Cookie") != "" {
+		cookie := request.Header.Get("Cookie")
+		if strings.Contains(cookie, "username=") && strings.Contains(cookie, "password=") {
 			_, _ = conn.Write([]byte("HTTP/1.1 302 Found\r\n" +
 				"Content-Length: 0\r\n" +
 				"Connection: close\r\n" +
@@ -157,7 +157,7 @@ var httpHandle = map[string]func(*Request, net.Conn){
 		}
 		if request.Method == "GET" {
 			cookie := request.Header.Get("Cookie")
-			if cookie == "" {
+			if !strings.Contains(cookie, "username=") || !strings.Contains(cookie, "password=") {
 				return
 			}
 
@@ -224,3 +224,13 @@ const login = `<!DOCTYPE html>
 <p>password:%s</p>
 </body>
 </html>`
+
+type Header map[string]string
+
+func (h Header) Add(k, v string) {
+	h[k] = v
+}
+
+func (h Header) Get(k string) string {
+	return h[k]
+}
